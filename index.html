@@ -1,0 +1,315 @@
+<!doctype html>
+<html lang="pl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>TaxMindAI — Asystent podatkowy</title>
+  <meta name="description" content="TaxMindAI — osobisty asystent podatkowy: wyliczenia PIT, VAT, cła, generowanie PDF, eksport e-mail." />
+  <link rel="icon" href="favicon.ico" />
+  <style>
+    :root{
+      --bg:#05271f;
+      --card:#072b24;
+      --muted:#9fb4a8;
+      --text:#e9f6f0;
+      --accent:#004d33;
+      --accent-2:#0b6b48;
+      --glass: rgba(255,255,255,0.03);
+    }
+    *{box-sizing:border-box}
+    body{margin:0;font-family:Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;color:var(--text);background:linear-gradient(180deg,var(--bg),#062a23);-webkit-font-smoothing:antialiased}
+    a{color:inherit;text-decoration:none}
+    .container{max-width:1100px;margin:0 auto;padding:20px}
+
+    /* NAV */
+    header{position:sticky;top:0;background:linear-gradient(180deg,rgba(2,6,23,.35),rgba(2,6,23,.15));backdrop-filter:blur(6px);border-bottom:1px solid rgba(255,255,255,0.03);z-index:40}
+    .nav-inner{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 20px}
+    .brand{display:flex;align-items:center;gap:12px}
+    .brand img{height:52px;width:auto;border-radius:8px}
+    .brand h1{font-size:20px;margin:0}
+    .nav-actions{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+    .btn{background:var(--card);border:1px solid rgba(255,255,255,0.04);color:var(--text);padding:10px 16px;border-radius:14px;cursor:pointer;transition:all .18s;box-shadow:0 6px 18px rgba(2,6,23,.4)}
+    .btn:hover{transform:translateY(-3px)}
+    .btn-cta{background:linear-gradient(180deg,var(--accent),var(--accent-2));border:none;color:white;font-weight:600}
+
+    /* HERO */
+    .hero{display:grid;grid-template-columns:1fr 420px;gap:28px;align-items:center;padding:56px 0}
+    .hero-left h2{font-size:36px;margin:0 0 12px}
+    .lead{color:var(--muted);max-width:760px}
+    .actions{margin-top:18px;display:flex;gap:12px;flex-wrap:wrap}
+
+    /* CARD LIST */
+    .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px;margin-top:28px}
+    .card{background:var(--card);padding:18px;border-radius:14px;border:1px solid rgba(255,255,255,0.03)}
+    .card h3{margin:0 0 8px}
+    .muted{color:var(--muted)}
+
+    /* Modal */
+    .modal{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(1,6,10,.85);z-index:120;overflow:auto;padding:20px}
+    .modal.open{display:flex}
+    .modal-card{width:min(980px,96vw);max-height:90vh;overflow:auto;background:linear-gradient(180deg,#041f1a,#06261d);border-radius:14px;padding:20px;border:1px solid rgba(255,255,255,0.04)}
+
+    /* Footer */
+    footer{padding:28px 0;color:var(--muted);border-top:1px solid rgba(255,255,255,0.02)}
+
+    /* Lottie box */
+    .anim-box{background:linear-gradient(180deg,rgba(255,255,255,0.01),rgba(255,255,255,0.02));border-radius:12px;padding:12px;border:1px dashed rgba(255,255,255,0.03);display:grid;place-items:center;height:240px}
+    .small{font-size:14px;color:var(--muted)}
+
+    @media (max-width:880px){.hero{grid-template-columns:1fr;gap:18px}.brand img{height:44px}.nav-inner{padding:10px}}
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container nav-inner">
+      <div class="brand">
+        <img src="taxmind_logo.png" alt="TaxMindAI logo" />
+        <div>
+          <h1>TaxMindAI</h1>
+          <div class="small">Twój osobisty asystent podatkowy i finansowy</div>
+        </div>
+      </div>
+      <nav class="nav-actions">
+        <button class="btn btn-cta" onclick="openSection('funkcje')">Funkcje</button>
+        <button class="btn btn-cta" onclick="openSection('instrukcja')">Instrukcja</button>
+        <button class="btn btn-cta" onclick="openSection('privacy')">Polityka prywatności</button>
+        <button class="btn btn-cta" onclick="openSection('kontakt')">Kontakt</button>
+        <button id="openExamples" class="btn btn-cta">Jak zadawać pytania</button>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container">
+    <!-- HERO -->
+    <section class="hero">
+      <div class="hero-left">
+        <h2>TaxMindAI — dokładne wyliczenia podatkowe i finansowe</h2>
+        <p class="lead">TaxMindAI to Twój osobisty asystent podatkowy i finansowy, który pomaga w rzeczywistym wyliczaniu podatków, wszystkich PIT-ów, VAT-u oraz opłat celnych dla wszystkich krajów na świecie. Nasza aplikacja działa jak Twój osobisty agent finansowy, który dokładnie oblicza należności podatkowe i uwzględnia koszty, ulgi oraz odliczenia, oszczędzając Twój czas i eliminując ryzyko błędów.</p>
+        <div class="actions">
+          <a href="#" class="btn btn-cta" onclick="openSection('kontakt')">Skontaktuj się</a>
+          <a href="#download" class="btn">Pobierz</a>
+        </div>
+
+        <div class="cards">
+          <div class="card">
+            <h3>Globalne stawki</h3>
+            <p class="muted">Obsługa przepisów i stawek dla większości krajów — automatyczne wykrywanie kraju lub ręczne ustawienie.</p>
+          </div>
+          <div class="card">
+            <h3>Eksport i cła</h3>
+            <p class="muted">Wyliczenia import/eksport z uwzględnieniem ceł i opłat lokalnych.</p>
+          </div>
+          <div class="card">
+            <h3>PDF & Email</h3>
+            <p class="muted">Generuj szczegółowe raporty w PDF, zapisz na urządzeniu i wyślij bezpośrednio e-mailem.</p>
+          </div>
+          <div class="card">
+            <h3>Historia i raporty</h3>
+            <p class="muted">Przechowuj historię wyliczeń i eksportuj raporty.</p>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <div class="anim-box">
+          <div id="lottieContainer" style="width:100%;height:240px"></div>
+        </div>
+        <div style="margin-top:12px;color:var(--muted);font-size:13px;text-align:center">
+          
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Modal sekcji -->
+  <div id="sectionModal" class="modal" role="dialog" aria-modal="true">
+    <div class="modal-card">
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:8px">
+        <h3 id="modalTitle"></h3>
+        <button class="btn" onclick="closeSection()">Zamknij</button>
+      </div>
+      <div id="modalContent" style="color:var(--muted)"></div>
+    </div>
+  </div>
+
+<!-- Modal examples -->
+<div id="examplesModal" class="modal" role="dialog" aria-modal="true">
+  <div class="modal-card">
+    <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:8px">
+      <h3>Jak zadawać pytania — przykłady</h3>
+      <button class="btn" id="closeExamples">Zamknij</button>
+    </div>
+    <div>
+      <pre style="background:#031a16;padding:12px;border-radius:10px;color:var(--muted);white-space:pre-wrap">
+1️⃣ Podstawowe pytania o podatki
+- Wprowadzamy dane finansowe w formie: przychody, koszty, ilość produktów/usług.
+- Można też dodać kraj, jeśli chcemy wymusić konkretną stawkę.
+
+Przykłady:
+• Oblicz wszystkie podatki (PIT, VAT, lokalne, cła) dla mojej firmy w Polsce. Przychód 50 000 zł, koszty 20 000 zł, 100 produktów sprzedanych.
+• Polska, przychód 120 000 zł, koszty 40 000 zł, 3 rodzaje usług – podaj szczegółowe wyliczenie podatków.
+• Wylicz podatek VAT i PIT dla przychodu 80 000 zł i kosztów 30 000 zł w Niemczech, 50 produktów.
+
+2️⃣ Pytania o różne kraje
+- AI potrafi wykryć kraj automatycznie, ale można też podać go ręcznie.
+
+Przykłady:
+• USA, przychód 100 000 USD, koszty 40 000 USD, 10 usług – policz wszystkie podatki federalne i stanowe.
+• Kanada, przychód 50 000 CAD, koszty 15 000 CAD, 25 produktów – wylicz PIT, VAT i cła krok po kroku.
+• Wielka Brytania, przychód 75 000 GBP, koszty 20 000 GBP, 30 usług – podaj dokładne wyliczenia podatków i gotowy wynik do urzędu.
+
+3️⃣ Pytania z detalami produktów lub usług
+- Możesz podawać ilość produktów lub usług i cenę jednostkową.
+
+Przykłady:
+• Polska, sprzedaję 100 sztuk produktu po 500 zł, koszty 20 000 zł – policz VAT, PIT, podatek lokalny i cła.
+• Niemcy, przychód 10 000 EUR, koszty 3 000 EUR, 50 usług – krok po kroku wyliczenie podatków.
+• USA, 200 produktów po 20 USD każdy, koszty 1 000 USD – oblicz podatki i gotowy raport.
+
+4️⃣ Pytania o eksport lub import
+- AI uwzględnia cła i podatki lokalne przy imporcie/eksportu.
+
+Przykłady:
+• Importuję z Chin 100 produktów po 50 EUR, wartość całkowita 5 000 EUR, VAT 19%, cło 5% – wylicz wszystkie podatki i końcowy koszt.
+• Eksportuję do USA 50 produktów po 200 USD – policz podatek, cła i VAT, przygotuj wynik do urzędu.
+• Polska, import usług z Niemiec, przychód 20 000 zł, koszty 5 000 zł – wylicz podatki i VAT.
+
+5️⃣ Pytania z różnymi scenariuszami
+
+Przykłady:
+• Polska, przychód 120 000 zł, koszty 40 000 zł, VAT 23% – policz PIT, VAT, lokalne podatki i końcowy wynik.
+• USA, przychód 50 000 USD, koszty 20 000 USD, sprzedaż mieszana – usługi i produkty – wylicz podatki.
+• Kanada, przychód 100 000 CAD, koszty 30 000 CAD, import z USA – podaj szczegółowe wyliczenia podatków, cła i gotowy wynik do PDF.
+
+✅ Wskazówki, aby uzyskać najlepsze odpowiedzi:
+- Podaj kraj – jeśli chcesz mieć pewność co do lokalnych stawek.
+- Podaj walutę lub kwoty w lokalnej walucie – AI dostosuje wyliczenia.
+- Podaj przychód, koszty i ilość produktów/usług – konieczne dla dokładnych obliczeń.
+- Dodaj kontekst import/eksport jeśli ma zastosowanie.
+- Poproś o krok po kroku i gotowy wynik do urzędu lub PDF.
+      </pre>
+    </div>
+  </div>
+</div>
+
+
+  <footer class="container">
+    <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">
+      <div>© <span id="year"></span> TaxMindAI</div>
+      <div style="color:var(--muted)">Projekt i wykonanie — TaxMindAI</div>
+    </div>
+  </footer>
+
+  <script src="https://unpkg.com/lottie-web@5.10.2/build/player/lottie.min.js"></script>
+  <script>
+    document.getElementById('year').textContent = new Date().getFullYear();
+
+    // Lottie animacja
+    lottie.loadAnimation({
+      container: document.getElementById('lottieContainer'),
+      renderer: 'svg',
+      loop: true,
+      autoplay: true,
+      path: 'ai_processor.json'
+    });
+
+    // Modal przykłady
+    const examplesModal = document.getElementById('examplesModal');
+    document.getElementById('openExamples').addEventListener('click', ()=> examplesModal.classList.add('open'))
+    document.getElementById('closeExamples').addEventListener('click', ()=> examplesModal.classList.remove('open'))
+    examplesModal.addEventListener('click', (e)=>{ if(e.target === examplesModal) examplesModal.classList.remove('open') })
+
+    // Modal sekcji
+    const sections = {
+      funkcje: `<ul>
+<li>Wyliczenia podatkowe dla różnych krajów z uwzględnieniem lokalnych przepisów.</li>
+<li>Rzeczywiste obliczenia kosztów podatkowych, w tym możliwość odliczeń i ulg.</li>
+<li>Wyliczenia wszystkich rodzajów PIT-ów oraz VAT.</li>
+<li>Kalkulacja należności celnych przy imporcie i eksporcie towarów.</li>
+<li>Działa globalnie – wszystkie wyliczenia obejmują wszystkie kraje.</li>
+<li>Monitorowanie historii wyliczeń i wyników.</li>
+<li>Generowanie raportów w formacie PDF i możliwość wysyłki wyników na e-mail.</li>
+<li>Dostęp do wszystkich funkcji po wykupieniu subskrypcji premium.</li>
+</ul>`,
+      instrukcja: `<h4>Instrukcja obsługi TaxMindAI</h4>
+<p>Twój osobisty asystent podatkowy i finansowy</p>
+<h4>1. Instalacja i logowanie</h4>
+<ul>
+<li>Pobierz aplikację z oficjalnego źródła Google Play.</li>
+<li>Zarejestruj konto przez Google lub podając e-mail i hasło (opcjonalnie numer telefonu z kodem SMS).</li>
+<li>Zaloguj się, aby uzyskać dostęp do wszystkich funkcji.</li>
+</ul>
+<h4>2. Konfiguracja danych finansowych</h4>
+<ul>
+<li>Wprowadź dane niezbędne do wyliczeń podatkowych: przychody, koszty, ulgi, odliczenia lub zdjęcia faktur i umów.</li>
+<li>Wybierz kraj, dla którego mają być wyliczone podatki.</li>
+</ul>
+<h4>3. Wyliczanie podatków</h4>
+<ul>
+<li>Wybierz typ podatku: PIT, VAT lub opłaty celne.</li>
+<li>Uzupełnij wymagane informacje dotyczące dochodów, faktur, importu/eksportu towarów.</li>
+<li>Kliknij „Wyślij do AI”, aby otrzymać dokładne wyliczenia z uwzględnieniem ulg i odliczeń.</li>
+</ul>
+<h4>4. Raporty i historia</h4>
+<ul>
+<li>Sprawdź historię wyliczeń w sekcji „Historia”.</li>
+<li>Generuj raporty w formacie PDF i wysyłaj je na e-mail.</li>
+</ul>
+<h4>5. Subskrypcja premium</h4>
+<ul>
+<li>Wykup subskrypcję, aby uzyskać dostęp do wszystkich funkcji i globalnych wyliczeń podatkowych.</li>
+<li>Płatności realizowane są wyłącznie przez oficjalny kanał Google Play.</li>
+</ul>
+<h4>6. Bezpieczeństwo i prywatność</h4>
+<ul>
+<li>Dane użytkownika są przechowywane zgodnie z RODO i nie są udostępniane osobom trzecim bez zgody.</li>
+<li>W każdej chwili możesz usunąć swoje konto i dane osobowe.</li>
+</ul>
+<h4>7. Zastrzeżenia</h4>
+<ul>
+<li>Wyniki obliczeń są zgodne z danymi wprowadzonymi przez użytkownika.</li>
+<li>Nie odpowiadamy za błędy wynikające z nieprawidłowych danych.</li>
+</ul>`,
+      privacy: `<h4>Zasady korzystania</h4>
+<ul>
+<li>TaxMindAI służy jako Twój osobisty doradca podatkowy – korzystaj zgodnie z prawem i odpowiedzialnie.</li>
+<li>Wyniki obliczeń są zgodne ze stanem prawnym i podatkowym w momencie wykonywania obliczeń.</li>
+<li>Subskrypcje i płatności realizowane są wyłącznie przez oficjalne kanały, np. Google Play.</li>
+</ul>
+<h4>Polityka prywatności</h4>
+<ul>
+<li>Aplikacja zbiera minimalne dane niezbędne do działania i subskrypcji (e-mail użytkownika, dane do logowania i informacje potrzebne do rozliczenia subskrypcji).</li>
+<li>Dane nie są udostępniane osobom trzecim bez zgody użytkownika.</li>
+<li>Przetwarzanie danych odbywa się zgodnie z RODO.</li>
+<li>Użytkownik może w każdej chwili usunąć swoje konto i dane osobowe.</li>
+</ul>
+<h4>Zastrzeżenia</h4>
+<ul>
+<li>Kopiowanie aplikacji, kodu źródłowego lub elementów graficznych i funkcjonalnych jest zabronione.</li>
+<li>Wszystkie prawa autorskie należą do TaxMindAI.</li>
+<li>Nie odpowiadamy za ewentualne błędy w obliczeniach wynikające z nieprawidłowych danych wprowadzonych przez użytkownika.</li>
+</ul>`,
+      kontakt: `<p>Zespół TaxMindAI — zarejestrowani w Polsce jako firma działająca pod nazwą TaxMindAI.</p>
+<p>Twórca i kontakt: <a href="mailto:taxmindaikim@gmail.com">taxmindaikim@gmail.com</a></p>`
+    };
+
+    function openSection(id){
+      document.getElementById('modalTitle').textContent = id.charAt(0).toUpperCase() + id.slice(1);
+      document.getElementById('modalContent').innerHTML = sections[id];
+      document.getElementById('sectionModal').classList.add('open');
+    }
+
+    function closeSection(){
+      document.getElementById('sectionModal').classList.remove('open');
+    }
+
+    document.getElementById('sectionModal').addEventListener('click', e=>{
+      if(e.target === document.getElementById('sectionModal')) closeSection();
+    });
+
+    document.addEventListener('keydown', e=>{
+      if(e.key==='Escape'){ closeSection(); examplesModal.classList.remove('open'); }
+    });
+  </script>
+</body>
+</html>
